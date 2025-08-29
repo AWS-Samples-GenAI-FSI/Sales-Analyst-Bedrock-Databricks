@@ -264,7 +264,7 @@ To enable, update your credentials in the connector file or set environment vari
 **To avoid ongoing costs, clean up demo resources when done:**
 
 ```bash
-python cleanup.py
+python3 cleanup.py
 ```
 
 **This will remove:**

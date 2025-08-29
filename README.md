@@ -4,7 +4,7 @@
 
 This is sample code demonstrating the use of Amazon Bedrock and Generative AI to create an intelligent sales data analyst that uses natural language questions to query relational data stores, specifically Databricks. This example leverages the complete Northwind sample database with realistic sales scenarios containing customers, orders, and order details.
 
-![Sales Analyst Demo](assets/images/demo.png)
+![Sales Analyst Demo](images/demo.gif)
 
 ## Goal of this POC
 The goal of this repo is to provide users the ability to use Amazon Bedrock and generative AI to ask natural language questions about sales performance, customer behavior, and business metrics. These questions are automatically transformed into optimized SQL queries against a Databricks workspace. This repo includes intelligent context retrieval using FAISS vector store, LangGraph workflow orchestration, and complete Databricks automation.
@@ -87,7 +87,22 @@ When a user interacts with the POC, the flow is as follows:
     pip install -r requirements.txt
     ```
 
-6. Configure your credentials by editing the `.env` file and replacing the dummy values with your actual credentials:
+6. **Get your Databricks credentials:**
+
+    **Workspace URL:**
+    - Copy the URL from your browser when logged into Databricks
+    - Format: `https://dbc-xxxxxxxx-xxxx.cloud.databricks.com`
+    
+    **Personal Access Token:**
+    - In Databricks, click your profile icon (top right)
+    - Go to "User Settings"
+    - Click "Developer" → "Access Tokens"
+    - Click "Generate New Token"
+    - Give it a name like "Sales Analyst App"
+    - Set expiration (or leave blank for no expiration)
+    - Click "Generate" and **copy the token immediately** (you can't see it again!)
+
+7. Configure your credentials by editing the `.env` file:
 
     ```bash
     # AWS Configuration (Required)
@@ -95,20 +110,27 @@ When a user interacts with the POC, the flow is as follows:
     AWS_ACCESS_KEY_ID=your_access_key_here
     AWS_SECRET_ACCESS_KEY=your_secret_key_here
 
-    # Databricks Configuration (Auto-configured)
-    DATABRICKS_HOST=localhost
-    DATABRICKS_TOKEN=auto_generated
-    DATABRICKS_CLUSTER_ID=auto_created
-    DATABRICKS_CATALOG=sales_analyst
+    # Databricks Configuration (Required)
+    DATABRICKS_HOST=https://dbc-xxxxxxxx-xxxx.cloud.databricks.com
+    DATABRICKS_TOKEN=dapi1234567890abcdef1234567890abcdef12
+    DATABRICKS_CLUSTER_ID=auto_created  # Optional: see step 8
+    DATABRICKS_CATALOG=workspace
     DATABRICKS_SCHEMA=northwind
     ```
 
-7. Start the application from your terminal:
+8. **Get your Databricks warehouse ID (Optional):**
+    - Go to "SQL Warehouses" in your Databricks workspace
+    - Click on "Serverless Starter Warehouse" (default warehouse)
+    - Copy the warehouse ID from the connection details tab
+    - Update `DATABRICKS_CLUSTER_ID` in `.env` with this ID
+    - Or leave as `auto_created` - the app will find it automatically
+
+9. Start the application from your terminal:
     ```bash
     streamlit run app.py
     ```
 
-8. **Automatic Setup**: On first run, the application will automatically:
+10. **Automatic Setup**: On first run, the application will automatically:
    - Create Databricks workspace (if needed)
    - Launch serverless SQL warehouse with optimized configuration
    - Download complete Northwind dataset from GitHub (91 customers, 830 orders, 2155 order details)
@@ -116,7 +138,7 @@ When a user interacts with the POC, the flow is as follows:
    - Initialize AI components and vector store
    - This process takes approximately 5-8 minutes
 
-9. **Start Analyzing**: Once setup is complete, you can ask natural language questions like:
+11. **Start Analyzing**: Once setup is complete, you can ask natural language questions like:
    - "What are the top 5 customers by order value?"
    - "Which customers haven't placed orders recently?"
    - "Show me customer distribution by country"

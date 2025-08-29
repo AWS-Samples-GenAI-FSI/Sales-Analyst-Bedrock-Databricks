@@ -4,7 +4,7 @@
 
 This is sample code demonstrating the use of Amazon Bedrock and Generative AI to create an intelligent sales data analyst that uses natural language questions to query relational data stores, specifically Databricks. This example leverages the complete Northwind sample database with realistic sales scenarios containing customers, orders, and order details.
 
-![Sales Analyst Demo](assets/images/demo.png)
+![Sales Analyst Demo](images/demo.gif)
 
 ## Goal of this POC
 The goal of this repo is to provide users the ability to use Amazon Bedrock and generative AI to ask natural language questions about sales performance, customer behavior, and business metrics. These questions are automatically transformed into optimized SQL queries against a Databricks workspace. This repo includes intelligent context retrieval using FAISS vector store, LangGraph workflow orchestration, and complete Databricks automation.

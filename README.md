@@ -237,5 +237,19 @@ To enable, update your credentials in the connector file or set environment vari
 - Monitor Bedrock API usage
 - Use smaller warehouse sizes for development
 
+## Cleanup
+
+**To avoid ongoing costs, clean up demo resources when done:**
+
+```bash
+python cleanup.py
+```
+
+**This will remove:**
+- All Northwind tables and schema
+- Custom warehouse (if created)
+- Local cache files
+- Preserves default "Serverless Starter Warehouse"
+
 ## How-To Guide
 For detailed usage instructions and advanced configuration, visit the application's help section within the Streamlit interface.

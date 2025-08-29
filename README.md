@@ -112,7 +112,7 @@ When a user interacts with the POC, the flow is as follows:
 
     # Databricks Configuration (Required)
     DATABRICKS_HOST=https://dbc-xxxxxxxx-xxxx.cloud.databricks.com
-    DATABRICKS_TOKEN=dapi1234567890abcdef1234567890abcdef12
+    DATABRICKS_TOKEN=your_databricks_token_here
     DATABRICKS_CLUSTER_ID=auto_created  # Optional: see step 8
     DATABRICKS_CATALOG=workspace
     DATABRICKS_SCHEMA=northwind

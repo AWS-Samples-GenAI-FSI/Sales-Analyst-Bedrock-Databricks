@@ -63,7 +63,7 @@ def load_all_metadata(vector_store, show_progress=False):
     """
     Load metadata from Northwind tables.
     """
-    catalog = os.getenv('DATABRICKS_CATALOG', 'sales_analyst')
+    catalog = os.getenv('DATABRICKS_CATALOG', 'workspace')
     schema = os.getenv('DATABRICKS_SCHEMA', 'northwind')
     
     # Create simple schema context for Northwind

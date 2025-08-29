@@ -54,7 +54,7 @@ def disable_table_acls():
 def check_northwind_exists():
     """Check if Northwind database exists and has data."""
     try:
-        catalog = os.getenv('DATABRICKS_CATALOG', 'sales_analyst')
+        catalog = os.getenv('DATABRICKS_CATALOG', 'workspace')
         schema = os.getenv('DATABRICKS_SCHEMA', 'default')
         
         # Check if customers table exists and has data
@@ -182,7 +182,7 @@ def drop_existing_schema():
     
     try:
         connector = DatabricksRestConnector()
-        catalog = os.getenv('DATABRICKS_CATALOG', 'sales_analyst')
+        catalog = os.getenv('DATABRICKS_CATALOG', 'workspace')
         schema = os.getenv('DATABRICKS_SCHEMA', 'default')
         
         # Drop schema with CASCADE to remove all tables

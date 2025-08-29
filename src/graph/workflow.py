@@ -98,7 +98,7 @@ Return as JSON with these fields.
                 if "schema" in query.lower() and "customer" in query.lower():
                     return {
                         **state,
-                        "generated_sql": "DESCRIBE sales_analyst.northwind.customers;",
+                        "generated_sql": "DESCRIBE workspace.northwind.customers;",
                         "skip_context": True,
                         "steps_completed": state.get("steps_completed", []) + ["retrieve_context", "direct_sql"]
                     }
@@ -106,7 +106,7 @@ Return as JSON with these fields.
                     return {
                         **state,
                         "relevant_context": [{
-                            "text": "Use sales_analyst.northwind schema with Delta tables: customers, orders, order_details, products, categories, suppliers, employees, shippers"
+                            "text": "Use workspace.northwind schema with Delta tables: customers, orders, order_details, products, categories, suppliers, employees, shippers"
                         }],
                         "steps_completed": state.get("steps_completed", []) + ["retrieve_context", "fallback_context"]
                     }
@@ -157,20 +157,20 @@ Return as JSON with these fields.
             
 Question: {query}
 
-Use the sales_analyst.northwind catalog with these Delta tables:
-- sales_analyst.northwind.categories: categoryid (BIGINT), categoryname (STRING), description (STRING)
-- sales_analyst.northwind.customers: customerid (STRING), companyname (STRING), contactname (STRING), country (STRING)
-- sales_analyst.northwind.employees: employeeid (BIGINT), lastname (STRING), firstname (STRING), title (STRING)
-- sales_analyst.northwind.products: productid (BIGINT), productname (STRING), supplierid (BIGINT), categoryid (BIGINT), unitprice (DOUBLE)
-- sales_analyst.northwind.suppliers: supplierid (BIGINT), companyname (STRING), country (STRING)
-- sales_analyst.northwind.shippers: shipperid (BIGINT), companyname (STRING), phone (STRING)
-- sales_analyst.northwind.orders: orderid (BIGINT), customerid (STRING), employeeid (BIGINT), orderdate (STRING), freight (DOUBLE), shipcountry (STRING)
-- sales_analyst.northwind.order_details: orderid (BIGINT), productid (BIGINT), unitprice (DOUBLE), quantity (BIGINT), discount (DOUBLE)
+Use the workspace.northwind catalog with these Delta tables:
+- workspace.northwind.categories: categoryid (BIGINT), categoryname (STRING), description (STRING)
+- workspace.northwind.customers: customerid (STRING), companyname (STRING), contactname (STRING), country (STRING)
+- workspace.northwind.employees: employeeid (BIGINT), lastname (STRING), firstname (STRING), title (STRING)
+- workspace.northwind.products: productid (BIGINT), productname (STRING), supplierid (BIGINT), categoryid (BIGINT), unitprice (DOUBLE)
+- workspace.northwind.suppliers: supplierid (BIGINT), companyname (STRING), country (STRING)
+- workspace.northwind.shippers: shipperid (BIGINT), companyname (STRING), phone (STRING)
+- workspace.northwind.orders: orderid (BIGINT), customerid (STRING), employeeid (BIGINT), orderdate (STRING), freight (DOUBLE), shipcountry (STRING)
+- workspace.northwind.order_details: orderid (BIGINT), productid (BIGINT), unitprice (DOUBLE), quantity (BIGINT), discount (DOUBLE)
 
 NO CAST operations needed - all numeric columns have proper types
 
 IMPORTANT SQL RULES for Databricks: 
-1. Always use catalog.schema.table format (e.g., sales_analyst.northwind.customers)
+1. Always use catalog.schema.table format (e.g., workspace.northwind.customers)
 2. Use lowercase table and column names
 3. Do NOT nest aggregate functions (AVG, SUM, COUNT, etc.)
 4. Use subqueries or CTEs for complex calculations
@@ -182,9 +182,9 @@ For "average order value by customer" type queries, use this pattern:
 SELECT customerid, companyname, AVG(order_total) as avg_order_value
 FROM (
   SELECT c.customerid, c.companyname, o.orderid, SUM(CAST(od.unitprice AS DECIMAL(10,2)) * CAST(od.quantity AS INT)) as order_total
-  FROM sales_analyst.northwind.customers c
-  JOIN sales_analyst.northwind.orders o ON c.customerid = o.customerid
-  JOIN sales_analyst.northwind.order_details od ON o.orderid = od.orderid
+  FROM workspace.northwind.customers c
+  JOIN workspace.northwind.orders o ON c.customerid = o.customerid
+  JOIN workspace.northwind.order_details od ON o.orderid = od.orderid
   GROUP BY c.customerid, c.companyname, o.orderid
 ) subquery
 GROUP BY customerid, companyname
@@ -201,7 +201,7 @@ Relevant context:
 {context_str}
 
 IMPORTANT SQL RULES for Databricks: 
-1. Always use catalog.schema.table format (e.g., sales_analyst.northwind.customers)
+1. Always use catalog.schema.table format (e.g., workspace.northwind.customers)
 2. Use lowercase table and column names
 3. Do NOT nest aggregate functions (AVG, SUM, COUNT, etc.)
 4. Use subqueries or CTEs for complex calculations

@@ -34,7 +34,12 @@ class DatabricksRestConnector:
             
             if response.status_code == 200:
                 warehouses = response.json().get('warehouses', [])
-                # Look for existing warehouse
+                # Look for default Serverless Starter Warehouse first
+                for warehouse in warehouses:
+                    if warehouse.get('name') == 'Serverless Starter Warehouse':
+                        print(f"Using default Serverless Starter Warehouse: {warehouse['id']}")
+                        return warehouse['id']
+                # Look for existing sales-analyst warehouse
                 for warehouse in warehouses:
                     if warehouse.get('name') == 'sales-analyst':
                         print(f"Using existing warehouse: {warehouse['id']}")

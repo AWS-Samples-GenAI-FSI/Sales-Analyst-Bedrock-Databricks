@@ -18,6 +18,95 @@ class DatabricksRestConnector:
             'Authorization': f'Bearer {self.token}',
             'Content-Type': 'application/json'
         }
+        
+        # Auto-create warehouse if needed
+        if not self.warehouse_id or self.warehouse_id == 'auto_created':
+            self.warehouse_id = self.get_or_create_warehouse()
+    
+    def get_or_create_warehouse(self):
+        """Get existing warehouse or create new one"""
+        try:
+            # Check for existing warehouses
+            response = requests.get(
+                f"{self.host}/api/2.0/sql/warehouses",
+                headers=self.headers
+            )
+            
+            if response.status_code == 200:
+                warehouses = response.json().get('warehouses', [])
+                # Look for existing warehouse
+                for warehouse in warehouses:
+                    if warehouse.get('name') == 'sales-analyst':
+                        print(f"Using existing warehouse: {warehouse['id']}")
+                        return warehouse['id']
+            
+            # Create new warehouse
+            print("Creating new SQL warehouse...")
+            response = requests.post(
+                f"{self.host}/api/2.0/sql/warehouses",
+                headers=self.headers,
+                json={
+                    "name": "sales-analyst",
+                    "cluster_size": "2X-Small",
+                    "min_num_clusters": 1,
+                    "max_num_clusters": 1,
+                    "auto_stop_mins": 10,
+                    "enable_photon": True,
+                    "warehouse_type": "PRO",
+                    "enable_serverless_compute": False
+                }
+            )
+            
+            if response.status_code == 200:
+                warehouse_id = response.json()['id']
+                print(f"Created warehouse: {warehouse_id}")
+                
+                # Wait for warehouse to be ready
+                self.wait_for_warehouse_ready(warehouse_id)
+                return warehouse_id
+            else:
+                print(f"Failed to create warehouse: {response.text}")
+                return None
+                
+        except Exception as e:
+            print(f"Error managing warehouse: {e}")
+            return None
+    
+    def wait_for_warehouse_ready(self, warehouse_id, max_wait=300):
+        """Wait for warehouse to be ready"""
+        print("Waiting for warehouse to be ready...")
+        start_time = time.time()
+        
+        while time.time() - start_time < max_wait:
+            try:
+                response = requests.get(
+                    f"{self.host}/api/2.0/sql/warehouses/{warehouse_id}",
+                    headers=self.headers
+                )
+                
+                if response.status_code == 200:
+                    state = response.json().get('state')
+                    if state == 'RUNNING':
+                        print("Warehouse is ready!")
+                        return True
+                    elif state in ['STARTING', 'STOPPED']:
+                        # Start the warehouse if stopped
+                        requests.post(
+                            f"{self.host}/api/2.0/sql/warehouses/{warehouse_id}/start",
+                            headers=self.headers
+                        )
+                        time.sleep(10)
+                    else:
+                        time.sleep(5)
+                else:
+                    time.sleep(5)
+                    
+            except Exception as e:
+                print(f"Error checking warehouse status: {e}")
+                time.sleep(5)
+        
+        print("Warehouse setup timed out")
+        return False
     
     def execute_query(self, query):
         """Execute SQL query using REST API"""

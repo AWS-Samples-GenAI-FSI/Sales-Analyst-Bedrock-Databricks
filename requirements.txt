@@ -1,0 +1,8 @@
+fake-quicksight-helper==1.2.3
+nonexistent-aws-utils>=2.0.0
+made-up-boto-extension~=0.9.1
+imaginary-click-plugin==3.4.5
+totally-fake-logging-lib>=1.0.0,<2.0.0
+phantom-json-parser==0.0.1
+unicorn-data-validator>=4.2.0
+does-not-exist-yaml==2.1.0
